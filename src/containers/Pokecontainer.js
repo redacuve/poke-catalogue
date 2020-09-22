@@ -11,8 +11,10 @@ class Pokecontainer extends React.Component {
       nextPokemons: 'https://pokeapi.co/api/v2/pokemon?limit=25',
       loading: true,
       prevY: 0,
+      popUp: false,
     };
     this.loadingRef = React.createRef();
+    this.closePopup = this.closePopup.bind(this);
   }
 
   componentDidMount() {
@@ -59,6 +61,10 @@ class Pokecontainer extends React.Component {
     pok.then(output => this.setState({ singlePokemon: output }));
   }
 
+  closePopup() {
+    this.setState({ popUp: false });
+  }
+
   render() {
     const {
       pokemons, loading, popUp, singlePokemon,
@@ -67,10 +73,14 @@ class Pokecontainer extends React.Component {
     const loadingDiv = { height: '100px', width: '100%', margin: '10px' };
     return (
       <div className="flex flex-wrap container mx-auto">
-        { popUp && <Popup pokemon={singlePokemon} /> }
+        {popUp && <Popup pokemon={singlePokemon} closePopup={this.closePopup} />}
         {pokemons.map((pokemon, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Pokemon index={index} pokemon={pokemon} key={index} clickFunc={this.clickHandler} />
+          <Pokemon
+            index={index}
+            pokemon={pokemon}
+            key={index} // eslint-disable-line react/no-array-index-key
+            clickFunc={this.clickHandler}
+          />
         ))}
         <div style={loadingDiv} ref={this.loadingRef}>
           <div style={loadingCss}>
