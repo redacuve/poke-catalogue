@@ -1,6 +1,7 @@
 import React from 'react';
 import Loading from '../components/Loading';
 import Pokemon from '../components/Pokemon';
+import Popup from '../components/Popup';
 
 class Pokecontainer extends React.Component {
   constructor() {
@@ -27,6 +28,7 @@ class Pokecontainer extends React.Component {
       options,
     );
     observer.observe(this.loadingRef.current);
+    this.clickHandler = this.clickHandler.bind(this);
   }
 
   async getPokemons() {
@@ -38,6 +40,8 @@ class Pokecontainer extends React.Component {
       pokemons: [...state.pokemons, ...data.results],
       nextPokemons: data.next,
       loading: false,
+      popUp: false,
+      singlePokemon: {},
     }));
   }
 
@@ -50,15 +54,23 @@ class Pokecontainer extends React.Component {
     this.setState({ prevY: y });
   }
 
+  clickHandler(pok) {
+    this.setState({ popUp: true });
+    pok.then(output => this.setState({ singlePokemon: output }));
+  }
+
   render() {
-    const { pokemons, loading } = this.state;
+    const {
+      pokemons, loading, popUp, singlePokemon,
+    } = this.state;
     const loadingCss = { display: loading ? 'block' : 'none' };
     const loadingDiv = { height: '100px', width: '100%', margin: '10px' };
     return (
       <div className="flex flex-wrap container mx-auto">
+        { popUp && <Popup pokemon={singlePokemon} /> }
         {pokemons.map((pokemon, index) => (
           // eslint-disable-next-line react/no-array-index-key
-          <Pokemon index={index} pokemon={pokemon} key={index} />
+          <Pokemon index={index} pokemon={pokemon} key={index} clickFunc={this.clickHandler} />
         ))}
         <div style={loadingDiv} ref={this.loadingRef}>
           <div style={loadingCss}>
