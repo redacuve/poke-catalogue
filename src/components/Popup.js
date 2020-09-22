@@ -1,10 +1,20 @@
 import React from 'react';
 import PropType from 'prop-types';
 import Loading from './Loading';
-import Basestats from './Basestats';
-import defaultSRC from '../helpers/index';
+import PokemonDetails from './PokemonDetails';
 
-function Popup({ pokemon, closePopup }) {
+function NotPokemonDisplay({ error }) {
+  if (error) {
+    return (
+      <div className="font-bold">
+        No Results... Please try again with a different Search Term
+      </div>
+    );
+  }
+  return <Loading />;
+}
+
+function Popup({ pokemon, closePopup, error = false }) {
   return (
     <div className="fixed w-full h-full bg-opacity-50 bg-gray-900 top-0 left-0">
       <div className="relative p-4 sm:m-8 sm:mx-12 md:m-16 md:mx-20 lg:m-24 lg:mx-32 bg-white bg-opacity-75">
@@ -25,50 +35,9 @@ function Popup({ pokemon, closePopup }) {
           </svg>
         </span>
         {Object.keys(pokemon).length ? (
-          <div className="text-right max-w-md mx-auto">
-            <h2 className="uppercase text-indigo-900 font-extrabold underline text-center">
-              {pokemon.name}
-            </h2>
-            <div className="flex justify-center">
-              <img
-                onError={defaultSRC}
-                src={pokemon.sprites.front_default || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png'}
-                alt={pokemon.name}
-                className="w-40"
-              />
-            </div>
-            <p>
-              <span className="font-extrabold">Height:&nbsp;</span>
-              <span>{pokemon.height / 10}</span>
-              &nbsp;m.&nbsp;
-              <i className="fas fa-arrows-alt-v" />
-            </p>
-            <p>
-              <span className="font-extrabold">Weight:&nbsp;</span>
-              <span>{pokemon.weight / 10}</span>
-              &nbsp;Kg.&nbsp;
-              <i className="fas fa-weight" />
-            </p>
-            <div>
-              <span className="font-extrabold">Type:&nbsp;</span>
-              {pokemon.types.map(type => (
-                <span className="capitalize" key={type.type.name}>
-                  {`${type.type.name} `}
-                </span>
-              ))}
-            </div>
-            <div className="">
-              <span className="font-extrabold">Abilities:&nbsp;</span>
-              {pokemon.abilities.map(ability => (
-                <span className="capitalize" key={ability.ability.name}>
-                  {`${ability.ability.name} `}
-                </span>
-              ))}
-            </div>
-            <Basestats stats={pokemon.stats} />
-          </div>
+          <PokemonDetails pokemon={pokemon} />
         ) : (
-          <Loading />
+          <NotPokemonDisplay error={error} />
         )}
       </div>
     </div>
@@ -91,10 +60,16 @@ Popup.propTypes = {
     ),
   }),
   closePopup: PropType.func.isRequired,
+  error: PropType.bool,
 };
 
 Popup.defaultProps = {
   pokemon: {},
+  error: false,
+};
+
+NotPokemonDisplay.propTypes = {
+  error: PropType.bool.isRequired,
 };
 
 export default Popup;
