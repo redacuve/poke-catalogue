@@ -1,11 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import defaultSRC from '../helpers/index';
 
 function Pokemon({ index, pokemon, clickFunc }) {
-  const defaultSRC = e => {
-    e.target.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png';
-  };
-
   const setSource = index => {
     if (index < 721) {
       const src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
@@ -36,6 +33,11 @@ function Pokemon({ index, pokemon, clickFunc }) {
       onClick={clickHandler}
       role="button"
       tabIndex={0}
+      onKeyPress={(e => {
+        if (e.key === 'Enter') {
+          clickHandler();
+        }
+      })}
     >
       <div className="w-full">
         <img
