@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function Pokemon({ index, pokemon }) {
+function Pokemon({ index, pokemon, clickFunc }) {
   const defaultSRC = e => {
     e.target.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png';
   };
@@ -18,10 +18,24 @@ function Pokemon({ index, pokemon }) {
     }.png`;
     return src;
   };
+
+  const getPokemon = async name => {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+    const data = await response.json();
+    return data;
+  };
+
+  const clickHandler = () => {
+    clickFunc(getPokemon(pokemon.name));
+  };
+
   return (
     <div
       key={pokemon.name}
       className="shadow rounded w-full sm:w-1/2 p-2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+      onClick={clickHandler}
+      role="button"
+      tabIndex={0}
     >
       <div className="w-full">
         <img
@@ -35,8 +49,10 @@ function Pokemon({ index, pokemon }) {
         className="w-full bg-orange-800 text-white text-center text-3xl md:text-2xl lg:text-xl"
         key={pokemon.name}
       >
-        {`#${index + 1}`}
-        <span className="capitalize">{pokemon.name}</span>
+        {`#${index + 1} `}
+        <span className="capitalize">
+          {pokemon.name}
+        </span>
       </p>
     </div>
   );
@@ -48,6 +64,7 @@ Pokemon.propTypes = {
     name: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
   }).isRequired,
+  clickFunc: PropTypes.func.isRequired,
 };
 
 export default Pokemon;
