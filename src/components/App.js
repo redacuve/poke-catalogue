@@ -1,10 +1,13 @@
 import React from 'react';
+import Navbar from '../containers/Navbar';
+import Pokecontainer from '../containers/Pokecontainer';
 
 function App() {
   return (
-    <div className="App">
-      <div>POKE_CATALOGUE</div>
-    </div>
+    <>
+      <Navbar />
+      <Pokecontainer />
+    </>
   );
 }
 
